@@ -7,7 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from locators.locators import MainPageLocators, LoginLocators, RegistrationLocators
 from data.test_data import BASE_URL
-import time
 
 
 class TestLogin:
@@ -26,20 +25,9 @@ class TestLogin:
         # Кликаем по кнопке "Войти в аккаунт"
         login_button = wait.until(EC.element_to_be_clickable(MainPageLocators.LOGIN_BUTTON))
         login_button.click()
-        
+
         # Ждем загрузки страницы входа
-        time.sleep(2)
-        print(f"Текущий URL после клика: {driver.current_url}")
-        print(f"Заголовок страницы: {driver.title}")
-        
-        # Проверяем, что есть поле Email
-        try:
-            email_input = driver.find_element(By.XPATH, "//label[text()='Email']/following-sibling::input")
-            print("✅ Поле Email найдено!")
-        except:
-            print("❌ Поле Email не найдено!")
-            # Показываем HTML страницы для отладки
-            print("HTML страницы:", driver.page_source[:500])
+        wait.until(EC.visibility_of_element_located(LoginLocators.EMAIL_INPUT))
 
         # Вводим данные для входа
         self._login_user(driver, registered_user['email'], registered_user['password'])
@@ -69,21 +57,11 @@ class TestLogin:
     def _login_user(self, driver, email, password):
         """Вспомогательный метод для входа"""
         wait = WebDriverWait(driver, 15)
-        
-        # Пробуем разные локаторы для поля Email
-        try:
-            email_input = wait.until(EC.element_to_be_clickable(LoginLocators.EMAIL_INPUT))
-        except:
-            # Если не работает, пробуем найти по классу
-            email_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".input_type_text input")))
 
+        email_input = wait.until(EC.element_to_be_clickable(LoginLocators.EMAIL_INPUT))
         email_input.send_keys(email)
 
-        try:
-            password_input = wait.until(EC.element_to_be_clickable(LoginLocators.PASSWORD_INPUT))
-        except:
-            password_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".input_type_password input")))
-            
+        password_input = wait.until(EC.element_to_be_clickable(LoginLocators.PASSWORD_INPUT))
         password_input.send_keys(password)
 
         login_button = driver.find_element(*LoginLocators.LOGIN_BUTTON)

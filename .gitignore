@@ -36,3 +36,4 @@ htmlcov/
 # Selenium
 geckodriver.log
 chromedriver.log
+chromedriver.exe
