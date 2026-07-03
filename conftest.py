@@ -5,14 +5,12 @@
 import sys
 import os
 
-# Добавляем корневую директорию в PYTHONPATH
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 from data.test_data import BASE_URL
 
 
@@ -26,9 +24,18 @@ def driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--remote-debugging-port=9222")
 
-    # Используем webdriver-manager для автоматической загрузки драйвера
-    service = Service(ChromeDriverManager().install())
+    # Используем локальный chromedriver.exe
+    chrome_driver_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chromedriver.exe")
+    
+    # Проверяем, существует ли файл
+    if not os.path.exists(chrome_driver_path):
+        raise FileNotFoundError(f"ChromeDriver не найден по пути: {chrome_driver_path}")
+    
+    print(f"Используется ChromeDriver: {chrome_driver_path}")
+    
+    service = Service(chrome_driver_path)
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get(BASE_URL)
