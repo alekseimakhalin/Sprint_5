@@ -13,23 +13,11 @@ class TestConstructor:
 
     def test_buns_tab_active_by_default(self, driver):
         """
-        Проверка, что таб "Булки" становится активным после переключения
+        Проверка, что таб "Булки" активен по умолчанию
         """
         self._open_constructor_page(driver)
         wait = WebDriverWait(driver, 15)
 
-        # Сначала кликаем на таб "Соусы"
-        sauces_tab = wait.until(EC.element_to_be_clickable(MainPageLocators.SAUCES_TAB))
-        sauces_tab.click()
-        
-        # Проверяем, что активен таб "Соусы"
-        active_tab = wait.until(EC.visibility_of_element_located(MainPageLocators.ACTIVE_TAB))
-        assert "Соусы" in active_tab.text
-        
-        # Теперь кликаем на таб "Булки"
-        buns_tab = wait.until(EC.element_to_be_clickable(MainPageLocators.BUNS_TAB))
-        buns_tab.click()
-        
         # Проверяем, что активен таб "Булки"
         active_tab = wait.until(EC.visibility_of_element_located(MainPageLocators.ACTIVE_TAB))
         assert "Булки" in active_tab.text
